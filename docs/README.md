@@ -1,3 +1,5 @@
 # ECE 5 Website
 
-Coming soon.
+## Participants
+
+Gideon Tong

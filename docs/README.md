@@ -1,5 +1,7 @@
 # ECE 5 Website
 
-## Participants
+## Team Members
 
 Gideon Tong
+Apnambir Sandhu
+Stefan Keane

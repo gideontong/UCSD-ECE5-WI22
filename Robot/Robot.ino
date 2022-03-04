@@ -133,7 +133,12 @@ void setup() {
 }
 
 void loop() {
-  readPhotoresistors(); // Read photoresistors 
+  ReadPhotoResistors(); // Read photoresistors 
+  // kpRead = 50;
+  SpRead = 2;
+kPRead = 2;
+kIRead = 2;
+kDRead = 2;
   // debugPhotoresistors();
   delay(1000);
 

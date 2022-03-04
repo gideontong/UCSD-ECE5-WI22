@@ -14,6 +14,9 @@
 #define M_STOP 4
 
 #define CALIBRATEEVERYTIME 1
+#define DETECTFALLOFFBOARD  1  // Detects robot falling off the board and immediately stops all motors
+#define PRINTALLDATA        0  // Prints ALL the data, Could be useful for debugging =)
+#define NOMINALSPEED        30 // This is the base speed for both motors, can also be increased by using potentiometers
 
 // Potentiometer Pins
 int LDR_Pin[] = {A8, A9, A10, A11, A12, A13, A14};
@@ -22,6 +25,24 @@ const int S_pin = A0; // Pin connected to Speed potentiometer
 const int P_pin = A1; // Pin connected to P term potentiometer
 const int I_pin = A2; // Pin connected to I term potentiometer
 const int D_pin = A3; // Pin connected to D term potentiometer
+
+//Variables for PID Calculations
+int MxRead, MxIndex, CriteriaForMax;
+int leftHighestPR, highestPResistor, rightHighestPR;
+float AveRead, WeightedAve;
+
+int M1SpeedtoMotor, M2SpeedtoMotor;
+
+// For Motor Control
+int Turn = 1, M1P = 0, M2P = 0;
+float error, lasterror = 0, sumerror = 0;
+float kP = 1, kI = 1, kD = 1;
+int rogueRobotCount = 0;
+
+int SpRead = 0; // speed increase
+int kPRead = 0; // proportional gain
+int kIRead = 0; // integral gain
+int kDRead = 0; // derivative gain
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *Motor1 = AFMS.getMotor(1);
@@ -104,7 +125,7 @@ void setup() {
   pinMode(WHITE_PIN, OUTPUT);
   pinMode(BLACK_PIN, OUTPUT);
 
-  Calibrate();
+  calibratePhotoresistors();
   RunMotors();
   sanityCheck();
 
@@ -112,7 +133,9 @@ void setup() {
 }
 
 void loop() {
-  ReadPhotoResistors(); // Read photoresistors 
+  readPhotoresistors(); // Read photoresistors 
+  // debugPhotoresistors();
+  delay(1000);
 
   CalcError();          // Calculates error
 

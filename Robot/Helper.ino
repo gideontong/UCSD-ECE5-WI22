@@ -28,23 +28,6 @@ void RunMotors() {
   runMotorAtSpeed(Motor1, M2SpeedtoMotor, FORWARD); // run motor 2
 } // end RunMotors()
 
-// A function that commands a specified motor to move towards a given direction at a given speed
-void runMotorAtSpeed(Adafruit_DCMotor *motor, int speed, int direction) {
-  motor->setSpeed(abs(speed));  // sets the speed of the motor from arguments
-
-  if (speed < 0) {              // swap direction if speed is negative
-    if (direction == FORWARD) {
-      motor->run(BACKWARD);     // sets the direction of the motor from arguments
-    }
-    else if (direction == BACKWARD) {
-      motor->run(FORWARD);      // sets the direction of the motor from arguments
-    }
-  }
-  else {
-    motor->run(direction);      // sets the direction of the motor from arguments
-  }
-}
-
 // ************************************************************************************************* //
 // Function to read photo resistors and map from 0 to 100
 void ReadPhotoResistors() {
@@ -129,6 +112,7 @@ void PID_Turn() {
 
   lasterror = error;
   sumerror = sumerror + error;
+  Serial.println(String(M1P) + " " + String(M2P));
 
 } // end PID_Turn()
 

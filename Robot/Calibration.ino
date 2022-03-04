@@ -2,14 +2,17 @@ void calibratePhotoresistors() {
   int numberOfMeasurements = 15;
 
   // Black
+  Serial.println("\nNow calibrating black.");
   digitalWrite(BLACK_PIN, HIGH);
   digitalWrite(WHITE_PIN, LOW);
+  delay(3000);
   CalibrateHelper(numberOfMeasurements, true);
   
   // White
-  delay(2000);
+  Serial.println("Now calibrating white.");
   digitalWrite(BLACK_PIN, LOW);
   digitalWrite(WHITE_PIN, HIGH);
+  delay(2000);
   CalibrateHelper(numberOfMeasurements, false);
 
   digitalWrite(WHITE_PIN, LOW);

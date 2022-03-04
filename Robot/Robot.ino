@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <EEPROM.h>
 #include <Adafruit_MotorShield.h>
 
 #define LED_PIN 13
@@ -12,6 +13,16 @@
 #define M_RIGHT 3
 #define M_STOP 4
 
+#define CALIBRATEEVERYTIME 1
+
+// Potentiometer Pins
+int LDR_Pin[] = {A8, A9, A10, A11, A12, A13, A14};
+int led_Pins[] = {13, 2, 3, 4, 5, 6, 7, 8};
+const int S_pin = A0; // Pin connected to Speed potentiometer
+const int P_pin = A1; // Pin connected to P term potentiometer
+const int I_pin = A2; // Pin connected to I term potentiometer
+const int D_pin = A3; // Pin connected to D term potentiometer
+
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *Motor1 = AFMS.getMotor(1);
 Adafruit_DCMotor *Motor2 = AFMS.getMotor(2);
@@ -20,6 +31,13 @@ int M1Sp = 60;
 int M2Sp = 60;
 
 int LDR[PHOTORESISTOR_COUNT];
+
+float Mn[20]; 
+float Mx[20];
+float LDRf[20];
+int rawPResistorData[20];  
+int totalPhotoResistors = sizeof(LDR_Pin) / sizeof(LDR_Pin[0]);  
+int numLEDs = sizeof(led_Pins) / sizeof(led_Pins[0]);   
 
 void readPhotoresistors() {
   int photoresistorCounter = 0;
@@ -38,9 +56,6 @@ void debugPhotoresistors() {
   Serial.println();
 
   delay(200);
-}
-
-void calibratePhotoresistors() {
 }
 
 /**
@@ -89,15 +104,25 @@ void setup() {
   pinMode(WHITE_PIN, OUTPUT);
   pinMode(BLACK_PIN, OUTPUT);
 
+  Calibrate();
+  RunMotors();
+  sanityCheck();
+
   Serial.println("Ready!");
 }
 
 void loop() {
-  digitalWrite(WHITE_PIN, HIGH);
-  digitalWrite(BLACK_PIN, HIGH);
-  runMotorAtSpeed(Motor1, M1Sp, FORWARD);
-  runMotorAtSpeed(Motor2, M2Sp, FORWARD);
-  readPhotoresistors();
-  debugPhotoresistors();
-  delay(0.5);
+  ReadPhotoResistors(); // Read photoresistors 
+
+  CalcError();          // Calculates error
+
+  PID_Turn();           // PID Control and Output to motors to turn
+
+  if (DETECTFALLOFFBOARD && determineRogueRobot())
+    haltMotors();       // Only if DETECTFALLOFFBOARD is enabled AND Robot is off the track will we halt the motors.
+  else
+    RunMotors();        // Runs motors
+  
+  if (PRINTALLDATA)     // If PRINTALLDATA Enabled, Print all the data
+    Print();   
 }

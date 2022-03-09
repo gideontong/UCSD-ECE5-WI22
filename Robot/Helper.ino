@@ -112,8 +112,7 @@ void PID_Turn() {
 
   lasterror = error;
   sumerror = sumerror + error;
-  Serial.println(String(M1P) + " " + String(M2P));
-
+  Serial.println(String(M1P) + " " + String(M2P) + " " + String(Turn));
 } // end PID_Turn()
 
 int determineRogueRobot() {
@@ -139,15 +138,15 @@ void haltMotors() {
   Motor2->setSpeed(0);
 }
 
-void Print() {
-  Serial.print(" Sp: " + String(SpRead) + " P: " + String(kP) + " I: " + String(kI) + " D: " + String(kD) + "  PResistor Val : ");
+void debugAll() {
+  Serial.print(" Sp: " + String(SpRead) + " P: " + String(kP) + " I: " + String(kI) + " D: " + String(kD) + "  PResistor: ");
 
   for (int i = 0; i < totalPhotoResistors; i++) {
     Serial.print(rawPResistorData[i]);
     Serial.print(" ");
   }
 
-  Serial.print(" Error: " + String(error));
-  Serial.println("  LMotor:  " + String(M1SpeedtoMotor) + "  RMotor:  " + String(M2SpeedtoMotor));
+  Serial.print(" Err: " + String(error));
+  Serial.println(" L: " + String(M1SpeedtoMotor) + " R: " + String(M2SpeedtoMotor));
   delay(20);
 }

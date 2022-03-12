@@ -3,19 +3,19 @@ void calibratePhotoresistors() {
 
   // Black
   Serial.println("\nNow calibrating black.");
-  digitalWrite(BLACK_PIN, HIGH);
-  digitalWrite(WHITE_PIN, LOW);
+  digitalWrite(BLACK_PIN, LOW);
+  digitalWrite(WHITE_PIN, HIGH);
   delay(3000);
   CalibrateHelper(numberOfMeasurements, true);
   
   // White
   Serial.println("Now calibrating white.");
-  digitalWrite(BLACK_PIN, LOW);
-  digitalWrite(WHITE_PIN, HIGH);
+  digitalWrite(BLACK_PIN, HIGH);
+  digitalWrite(WHITE_PIN, LOW);
   delay(2000);
   CalibrateHelper(numberOfMeasurements, false);
 
-  digitalWrite(WHITE_PIN, LOW);
+  digitalWrite(WHITE_PIN, HIGH);
 
   if (!CALIBRATEEVERYTIME)
     EEPROMCalibration();

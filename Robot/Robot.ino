@@ -45,8 +45,8 @@ int kIRead = 0;  // integral gain
 int kDRead = 0;  // derivative gain
 
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *Motor1 = AFMS.getMotor(1);
-Adafruit_DCMotor *Motor2 = AFMS.getMotor(2);
+Adafruit_DCMotor *Motor1 = AFMS.getMotor(2);
+Adafruit_DCMotor *Motor2 = AFMS.getMotor(1);
 
 int M1Sp = 60;
 int M2Sp = 60;
@@ -77,12 +77,10 @@ void setup() {
 
 void loop() {
   ReadPhotoResistors();  // Read photoresistors
-  // kpRead = 50;
-  SpRead = 0;
-  kPRead = 2;
-  kIRead = 2;
-  kDRead = 2;
-  delay(1000);
+  SpRead = 1;
+  kPRead = 8;
+  kIRead = 0;
+  kDRead = 0;
 
   CalcError();  // Calculates error
 
